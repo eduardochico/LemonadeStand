@@ -81,6 +81,7 @@ contract LemonadeStand {
 	function buyItem(uint sku) forSale(sku) paidEnough(items[sku].price) public payable {
 		address buyer = msg.sender;
 		uint price = items[sku].price;
+		
 
 		//update buyer
 		items[sku].buyer = buyer;
@@ -89,6 +90,12 @@ contract LemonadeStand {
 
 		//transfer money to seller
 		items[sku].seller.transfer(price);
+
+		if(price > items[sku].price) {
+			uint refund = price - items[sku].price;
+			items[sku].buyer.transfer(refund);
+		}
+
 
 		//emit the appropriate event
 		emit Sold(sku);
